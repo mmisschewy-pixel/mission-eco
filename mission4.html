@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission 4 | Eco Hero Adventure</title>
+<style>
+:root{
+  --ink:#193b32; --green:#2f7855; --mint:#dff4d9; --cream:#fff9e9;
+  --yellow:#ffd65a; --coral:#ff886e; --blue:#a9def0; --white:#fff;
+  --shadow:0 12px 28px rgba(34,79,55,.14);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink);background:#f4f8e9}
+button{font:inherit;cursor:pointer}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px clamp(16px,4vw,46px);background:#fffdf4;border-bottom:3px solid #d5e9c7;position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.3px}
+.brand-icon{width:42px;height:42px;border-radius:14px;background:var(--yellow);display:grid;place-items:center;font-size:25px;box-shadow:0 4px 0 #e5b944}
+.mission-pill{background:#e2f4d9;padding:9px 14px;border-radius:999px;font-size:13px;font-weight:800}
+.hero{max-width:1150px;margin:0 auto;padding:28px 18px 16px;text-align:center}
+.eyebrow{display:inline-block;background:#fff0b6;border:2px solid #f0d778;padding:7px 13px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:1.1px;text-transform:uppercase}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:15px 0 10px;letter-spacing:-1.4px}
+.hero p{max-width:650px;margin:0 auto;color:#527064;line-height:1.6;font-size:16px}
+.map-shell{max-width:1160px;margin:18px auto 46px;padding:0 16px}
+.map-frame{background:#fffdf5;border:4px solid #fff;border-radius:30px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.map-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 20px;border-bottom:2px dashed #d8e8ce;flex-wrap:wrap}
+.map-heading h2{margin:0;font-size:19px}
+.map-heading span{font-size:13px;color:#62806e}
+.map-canvas{position:relative;min-height:530px;background:#dff1c9;overflow:hidden}
+.map-art{display:block;width:100%;height:100%;position:absolute;inset:0}
+.station{position:absolute;transform:translate(-50%,-50%);z-index:1;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:100px;color:var(--ink);font-weight:900}
+.station .bubble{width:58px;height:58px;display:grid;place-items:center;font-size:28px;background:#fff;border:3px solid #fff;border-radius:21px;box-shadow:0 5px 0 rgba(25,59,50,.18);transition:transform .18s,box-shadow .18s}
+.station:hover .bubble,.station:focus-visible .bubble{transform:translateY(-5px) rotate(-3deg);box-shadow:0 9px 0 rgba(25,59,50,.14);outline:3px solid var(--yellow)}
+.station .label{font-size:12px;line-height:1.15;max-width:118px;background:#fffdf0;border:2px solid #fff;border-radius:10px;padding:5px 8px;box-shadow:0 3px 0 rgba(25,59,50,.10)}
+.station.done .bubble{background:#d5f4bd;border-color:#70b65c}
+.station.done .label:after{content:" ✓";color:#2f8c4f}
+.s1{left:13%;top:23%}.s2{left:34%;top:15%}.s3{left:57%;top:20%}.s4{left:82%;top:28%}
+.s5{left:85%;top:61%}.s6{left:65%;top:78%}.s7{left:43%;top:69%}.s8{left:22%;top:77%}.s9{left:10%;top:52%}
+.map-tip{display:flex;gap:10px;align-items:center;padding:14px 18px;background:#fff9e9;color:#4c6b5a;font-size:13px;line-height:1.45;border-top:2px dashed #d8e8ce}
+.map-tip b{color:var(--green)}
+/* Station information view */
+.lesson-view{display:none;max-width:980px;margin:28px auto 60px;padding:0 18px}
+.lesson-card{background:#fffdf5;border:4px solid #fff;border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
+.lesson-banner{padding:26px clamp(20px,5vw,44px);background:linear-gradient(120deg,#dff4d9,#fff0b6);display:flex;align-items:center;gap:18px}
+.lesson-emoji{width:78px;height:78px;flex-shrink:0;border-radius:25px;background:#fff;display:grid;place-items:center;font-size:42px;box-shadow:0 5px 0 rgba(25,59,50,.12)}
+.lesson-kicker{font-size:12px;text-transform:uppercase;font-weight:900;letter-spacing:1.2px;color:#538264}
+.lesson-banner h2{font-size:clamp(25px,4vw,37px);margin:5px 0 0;line-height:1.08}
+.lesson-body{padding:clamp(20px,4vw,38px)}
+.lesson-body h3{font-size:19px;margin:0 0 10px}
+.explanation{font-size:17px;line-height:1.75;margin:0 0 23px;color:#35594a}
+.tip{display:flex;gap:13px;background:#e9f7df;border:2px solid #cce7bc;border-radius:18px;padding:16px 18px;line-height:1.6}
+.tip-icon{font-size:25px}
+.tip strong{display:block;margin-bottom:3px}
+.lesson-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:0 clamp(20px,4vw,38px) 28px}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:900;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--green);color:white;box-shadow:0 4px 0 #20583c}
+.btn-secondary{background:#fff0b6;color:var(--ink);box-shadow:0 4px 0 #e5d18c}
+.progress-wrap{margin:0 0 16px;display:flex;align-items:center;gap:12px;color:#527064;font-size:13px;font-weight:800}
+.progress-track{height:9px;flex:1;background:#dce8d3;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:#4e9b63;border-radius:99px;transition:width .2s}
+.footer{text-align:center;color:#698273;font-size:12px;padding:0 15px 28px}
+@media(max-width:700px){
+ .topbar{padding:12px 14px}.brand{font-size:13px}.brand-icon{width:36px;height:36px}.mission-pill{font-size:11px;padding:7px 10px}
+ .hero{padding-top:22px}.hero p{font-size:14px}
+ .map-heading{padding:14px}.map-heading h2{font-size:16px}.map-heading span{font-size:11px}
+ .map-canvas{min-height:610px}
+ .station{min-width:72px;gap:4px}.station .bubble{width:45px;height:45px;border-radius:16px;font-size:23px;border-width:2px}
+ .station .label{font-size:10px;max-width:94px;padding:4px 5px;border-radius:8px}
+ .s1{left:15%;top:18%}.s2{left:49%;top:12%}.s3{left:81%;top:19%}.s4{left:82%;top:42%}
+ .s5{left:79%;top:67%}.s6{left:51%;top:83%}.s7{left:27%;top:73%}.s8{left:13%;top:53%}.s9{left:16%;top:34%}
+ .lesson-banner{align-items:flex-start;padding:22px 18px;gap:13px}.lesson-emoji{width:60px;height:60px;font-size:32px;border-radius:19px}.explanation{font-size:16px}
+ .lesson-actions .btn{flex:1}
+}
+@media(max-width:390px){.map-canvas{min-height:650px}.station .label{max-width:82px;font-size:9px}.station .bubble{width:41px;height:41px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-icon">🌱</div><span>ECO HERO ADVENTURE</span></div>
+  <div class="mission-pill">MISSION 4 · WASTE MANAGEMENT</div>
+</header>
+
+<main>
+<section id="mapPage">
+  <div class="hero">
+    <span class="eyebrow">🌍 Your planet needs you!</span>
+    <h1>Explore the Eco Map</h1>
+    <p>Travel around the map and tap each place to discover simple ways to manage waste and protect our environment.</p>
+  </div>
+
+  <div class="map-shell">
+    <div class="map-frame">
+      <div class="map-heading">
+        <h2>🗺️ Eco Hero Adventure Map</h2>
+        <span>Tap a location to explore it</span>
+      </div>
+      <div class="map-canvas">
+        <svg class="map-art" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.7" fill="#b4d9a1" opacity=".65"/></pattern>
+          </defs>
+          <rect width="1000" height="600" fill="#dff1c9"/>
+          <rect width="1000" height="600" fill="url(#dots)"/>
+          <!-- ponds -->
+          <path d="M680 35 C760 0 890 42 920 100 C944 145 888 170 830 150 C778 132 730 167 690 133 C656 105 640 62 680 35Z" fill="#a9def0"/>
+          <path d="M40 420 C78 385 135 398 158 430 C184 468 142 510 94 495 C52 483 20 457 40 420Z" fill="#a9def0"/>
+          <!-- winding trail -->
+          <path d="M90 135 C180 180 250 70 365 95 S500 190 590 115 S760 200 835 240 S885 345 840 390 S720 465 650 475 S490 405 420 430 S245 520 165 465" fill="none" stroke="#fff8df" stroke-width="35" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M90 135 C180 180 250 70 365 95 S500 190 590 115 S760 200 835 240 S885 345 840 390 S720 465 650 475 S490 405 420 430 S245 520 165 465" fill="none" stroke="#e8cf8d" stroke-width="4" stroke-dasharray="12 14" stroke-linecap="round"/>
+          <!-- trees -->
+          <g><g transform="translate(250 260)"><rect x="-6" y="16" width="12" height="35" rx="4" fill="#a96e46"/><circle cy="0" r="28" fill="#68ad67"/><circle cx="-18" cy="10" r="19" fill="#79bf70"/><circle cx="18" cy="12" r="20" fill="#4f9a5c"/></g>
+          <g transform="translate(525 300)"><rect x="-6" y="16" width="12" height="35" rx="4" fill="#a96e46"/><circle cy="0" r="28" fill="#68ad67"/><circle cx="-18" cy="10" r="19" fill="#79bf70"/><circle cx="18" cy="12" r="20" fill="#4f9a5c"/></g>
+          <g transform="translate(350 520)"><rect x="-5" y="14" width="10" height="30" rx="4" fill="#a96e46"/><circle cy="0" r="24" fill="#68ad67"/><circle cx="-15" cy="9" r="16" fill="#79bf70"/><circle cx="15" cy="9" r="16" fill="#4f9a5c"/></g>
+          <g transform="translate(940 500)"><rect x="-5" y="14" width="10" height="30" rx="4" fill="#a96e46"/><circle cy="0" r="24" fill="#68ad67"/><circle cx="-15" cy="9" r="16" fill="#79bf70"/><circle cx="15" cy="9" r="16" fill="#4f9a5c"/></g></g>
+          <!-- little flowers -->
+          <g fill="#ffcf55"><circle cx="200" cy="350" r="5"/><circle cx="210" cy="345" r="5"/><circle cx="205" cy="355" r="5"/><circle cx="700" cy="350" r="5"/><circle cx="710" cy="345" r="5"/><circle cx="705" cy="355" r="5"/></g>
+          <g fill="#ff8e79"><circle cx="300" cy="180" r="5"/><circle cx="310" cy="175" r="5"/><circle cx="305" cy="185" r="5"/><circle cx="570" cy="540" r="5"/><circle cx="580" cy="535" r="5"/><circle cx="575" cy="545" r="5"/></g>
+        </svg>
+        <button class="station s1" data-id="0" aria-label="Waste Wrapping Station"><span class="bubble">🗑️</span><span class="label">Waste Wrapping</span></button>
+        <button class="station s2" data-id="1" aria-label="Compost Garden"><span class="bubble">🍌</span><span class="label">Compost Garden</span></button>
+        <button class="station s3" data-id="2" aria-label="Oil Collection Point"><span class="bubble">🛢️</span><span class="label">Oil Collection</span></button>
+        <button class="station s4" data-id="3" aria-label="Waste Sorting Centre"><span class="bubble">♻️</span><span class="label">Sorting Centre</span></button>
+        <button class="station s5" data-id="4" aria-label="Donation Centre"><span class="bubble">🎁</span><span class="label">Donation Centre</span></button>
+        <button class="station s6" data-id="5" aria-label="Reuse Workshop"><span class="bubble">🫙</span><span class="label">Reuse Workshop</span></button>
+        <button class="station s7" data-id="6" aria-label="Recycling Centre"><span class="bubble">🔄</span><span class="label">Recycling Centre</span></button>
+        <button class="station s8" data-id="7" aria-label="Repair Workshop"><span class="bubble">🛠️</span><span class="label">Repair Workshop</span></button>
+        <button class="station s9" data-id="8" aria-label="Reusable Bag Shop"><span class="bubble">🛍️</span><span class="label">Reusable Bag Shop</span></button>
+      </div>
+      <div class="map-tip"><span style="font-size:22px">💡</span><div><b>Eco Hero tip:</b> Explore all 9 places! Each stop explains one useful way to manage waste. Your explored places will be marked on the map.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="lessonPage" class="lesson-view" aria-live="polite">
+  <div class="progress-wrap"><span id="progressText">0 of 9 places explored</span><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
+  <article class="lesson-card">
+    <div class="lesson-banner">
+      <div class="lesson-emoji" id="lessonEmoji">🗑️</div>
+      <div><div class="lesson-kicker" id="lessonKicker">Eco Stop 1</div><h2 id="lessonTitle">Waste Wrapping Station</h2></div>
+    </div>
+    <div class="lesson-body">
+      <h3>What should we do?</h3>
+      <p class="explanation" id="lessonText"></p>
+      <div class="tip"><div class="tip-icon">🌟</div><div><strong>Eco Hero Tip</strong><span id="lessonTip"></span></div></div>
+    </div>
+    <div class="lesson-actions">
+      <button class="btn btn-secondary" id="mapButton">← Back to Map</button>
+      <button class="btn btn-primary" id="nextButton">Next Station →</button>
+    </div>
+  </article>
+</section>
+</main>
+<div class="footer">Small actions make a greener world 🌿</div>
+
+<script>
+const stations = [
+ {emoji:"🗑️",title:"Waste Wrapping Station",text:"Wrap waste materials properly before putting them in the bin. This helps keep the surroundings clean and prevents rubbish from spreading. Sharp or dangerous waste should be handled by a responsible adult.",tip:"Use a suitable bag or wrapping and always put waste in the correct bin."},
+ {emoji:"🍌",title:"Compost Garden",text:"Some waste, such as fruit peels, vegetable scraps and dry leaves, can decompose naturally with the help of microorganisms. These materials can be turned into compost for plants.",tip:"Put suitable food scraps and leaves into a compost bin."},
+ {emoji:"🛢️",title:"Oil Collection Point",text:"Used cooking oil should not be poured into sinks or drains. Let it cool, place it in a suitable sealed container and bring it to an appropriate collection point.",tip:"Keep used oil in a closed container and ask an adult where to take it."},
+ {emoji:"♻️",title:"Waste Sorting Centre",text:"Sort waste materials according to their types, such as paper, plastic, glass and metal. Sorting makes it easier to manage waste and identify items that can be recycled.",tip:"Check the labels on recycling bins before putting items inside."},
+ {emoji:"🎁",title:"Donation Centre",text:"Items that are still clean and in good condition, such as books, clothes and toys, can be donated to people who need them instead of being thrown away.",tip:"Ask an adult to help you donate items that are safe and in good condition."},
+ {emoji:"🫙",title:"Reuse Workshop",text:"Some items can be used again instead of being thrown away. For example, a clean jar can store small objects, and one-sided paper can be used for drawing.",tip:"Think of another useful purpose before throwing an item away."},
+ {emoji:"🔄",title:"Recycling Centre",text:"Recycling turns suitable waste materials into materials or products that can be used again. Paper, some plastics, glass and metals may be recyclable when accepted by local facilities.",tip:"Keep recyclable items reasonably clean and follow local recycling instructions."},
+ {emoji:"🛠️",title:"Repair Workshop",text:"A faulty item may be repaired instead of being thrown away. Repairing suitable items can help them last longer and reduce the amount of waste we produce.",tip:"Ask a responsible adult to repair damaged items. Electrical repairs must be done by a qualified person."},
+ {emoji:"🛍️",title:"Reusable Bag Shop",text:"Reusable bags can be used many times when shopping. Using them helps reduce the need for single-use plastic bags and can reduce plastic waste.",tip:"Keep a reusable bag near your school bag or by the door so you remember to bring it."}
+];
+let current=0;
+const explored=new Set();
+const mapPage=document.getElementById('mapPage');
+const lessonPage=document.getElementById('lessonPage');
+const stationsButtons=[...document.querySelectorAll('.station')];
+function updateProgress(){
+ document.getElementById('progressText').textContent=`${explored.size} of ${stations.length} places explored`;
+ document.getElementById('progressFill').style.width=`${explored.size/stations.length*100}%`;
+ stationsButtons.forEach((b,i)=>b.classList.toggle('done',explored.has(i)));
+}
+function openStation(index){
+ current=index; explored.add(index);
+ const s=stations[index];
+ document.getElementById('lessonEmoji').textContent=s.emoji;
+ document.getElementById('lessonKicker').textContent=`ECO STOP ${index+1} OF ${stations.length}`;
+ document.getElementById('lessonTitle').textContent=s.title;
+ document.getElementById('lessonText').textContent=s.text;
+ document.getElementById('lessonTip').textContent=s.tip;
+ document.getElementById('nextButton').textContent=index===stations.length-1?'Back to Map ✓':'Next Station →';
+ mapPage.style.display='none'; lessonPage.style.display='block';
+ updateProgress(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function backToMap(){lessonPage.style.display='none';mapPage.style.display='block';updateProgress();window.scrollTo({top:0,behavior:'smooth'});}
+stationsButtons.forEach(b=>b.addEventListener('click',()=>openStation(Number(b.dataset.id))));
+document.getElementById('mapButton').addEventListener('click',backToMap);
+document.getElementById('nextButton').addEventListener('click',()=>{if(current===stations.length-1){backToMap();}else{openStation(current+1);}});
+updateProgress();
+</script>
+</body>
+</html>
